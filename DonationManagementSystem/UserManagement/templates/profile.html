@@ -1,0 +1,258 @@
+{% extends "dashboardBase.html" %}
+
+<!-- Link the css -->
+{% block link-css %}
+{% load static %}
+    <link rel="stylesheet" href="{% static 'css/sidebar.css' %}">
+{% endblock %}
+
+<!-- Main content -->
+{% block main-content %}
+<div class="main-content">
+    <!-- Top Bar -->
+    <div class="topbar">
+        <div class="topbar-search">
+            <i class="fas fa-search"></i>
+            <input type="text" placeholder="Search...">
+        </div>
+        <div class="user-info">
+            <img src="{% if user.profile_image %}{{ user.profile_image.url }}{% else %}/api/placeholder/40/40{% endif %}" alt="Profile">
+            <span>{{ user.first_name }} {{ user.last_name }}</span>
+        </div>
+    </div>
+
+    <!-- Content -->
+    <div class="content">
+        <h1 class="page-title">User Profile</h1>
+        
+        <div class="profile-container">
+            <!-- Left Column - Profile Details -->
+            <div>
+                <div class="card">
+                    <div class="card-header">
+                        Profile Information
+                    </div>
+                    <div class="card-body">
+                        <div class="profile-image">
+                            <img src="{% if user.profile_image %}{{ user.profile_image.url }}{% else %}/api/placeholder/150/150{% endif %}" alt="Profile">
+                            <div class="upload-btn">
+                                <i class="fas fa-camera"></i> Change Photo
+                            </div>
+                        </div>
+                        
+                        {% if user.is_donor %}
+                        <div class="user-role role-donor">Donor</div>
+                        {% elif user.is_beneficiary %}
+                        <div class="user-role role-beneficiary">Beneficiary</div>
+                        {% elif user.is_staff %}
+                        <div class="user-role role-admin">Administrator</div>
+                        {% endif %}
+
+                        <div class="profile-stats">
+                            {% if user.is_donor %}
+                            <div class="stat-card donor-stat">
+                                <div class="stat-title">Total Donations</div>
+                                <div class="stat-value">{{ user.donations_count }}</div>
+                            </div>
+                            <div class="stat-card impact-stat">
+                                <div class="stat-title">Impact</div>
+                                <div class="stat-value">{{ user.impact_count }} Lives</div>
+                            </div>
+                            {% elif user.is_beneficiary %}
+                            <div class="stat-card beneficiary-stat">
+                                <div class="stat-title">Received</div>
+                                <div class="stat-value">{{ user.received_count }}</div>
+                            </div>
+                            <div class="stat-card history-stat">
+                                <div class="stat-title">Pending</div>
+                                <div class="stat-value">{{ user.pending_count }}</div>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        Recent Activity
+                    </div>
+                    <div class="card-body">
+                        <div class="activity-log">
+                            {% for activity in user.activities %}
+                            <div class="activity-item">
+                                <div class="activity-date">{{ activity.created_at }}</div>
+                                <div class="activity-desc">{{ activity.description }}</div>
+                            </div>
+                            {% empty %}
+                            <div class="activity-item">
+                                <div class="activity-desc">No recent activity.</div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column - Edit Profile -->
+            <div>
+                <div class="card">
+                    <div class="card-header">
+                        Edit Profile
+                    </div>
+                    <div class="card-body">
+                        <!-- <form method="post" action=" url 'profile_update' "> -->
+                        <form>
+                            {% csrf_token %}
+                            
+                            <div class="form-group">
+                                <label for="first_name">First Name</label>
+                                <input type="text" class="form-control" id="first_name" name="first_name" value="{{ user.first_name }}">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="last_name">Last Name</label>
+                                <input type="text" class="form-control" id="last_name" name="last_name" value="{{ user.last_name }}">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="email">Email Address</label>
+                                <input type="email" class="form-control" id="email" name="email" value="{{ user.email }}">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="phone">Phone Number</label>
+                                <input type="tel" class="form-control" id="phone" name="phone" value="{{ user.phone }}">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="address">Address</label>
+                                <textarea class="form-control" id="address" name="address" rows="3">{{ user.address }}</textarea>
+                            </div>
+                            
+                            {% if user.is_donor %}
+                            <div class="form-group">
+                                <label>Donation Preferences</label>
+                                <div class="donation-preference">
+                                    <label>
+                                        <input type="checkbox" name="pref_money" {% if user.pref_money %}checked{% endif %}>
+                                        Money
+                                    </label>
+                                    <label>
+                                        <input type="checkbox" name="pref_goods" {% if user.pref_goods %}checked{% endif %}>
+                                        Goods
+                                    </label>
+                                    <label>
+                                        <input type="checkbox" name="pref_time" {% if user.pref_time %}checked{% endif %}>
+                                        Volunteer Time
+                                    </label>
+                                </div>
+                            </div>
+                            {% endif %}
+                            
+                            {% if user.is_beneficiary %}
+                            <div class="form-group">
+                                <label for="organization">Organization Name</label>
+                                <input type="text" class="form-control" id="organization" name="organization" value="{{ user.organization }}">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="org_description">Organization Description</label>
+                                <textarea class="form-control" id="org_description" name="org_description" rows="3">{{ user.org_description }}</textarea>
+                            </div>
+                            {% endif %}
+                            
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-primary">Save Changes</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                
+                {% if user.is_donor %}
+                <div class="card">
+                    <div class="card-header">
+                        Recent Donations
+                    </div>
+                    <div class="card-body">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Beneficiary</th>
+                                    <th>Type</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for donation in user.recent_donations %}
+                                <tr>
+                                    <td>{{ donation.created_at }}</td>
+                                    <td>{{ donation.beneficiary.name }}</td>
+                                    <td>{{ donation.type }}</td>
+                                    <td>
+                                        {% if donation.status == 'completed' %}
+                                        <span class="badge badge-success">Completed</span>
+                                        {% elif donation.status == 'pending' %}
+                                        <span class="badge badge-warning">Pending</span>
+                                        {% else %}
+                                        <span class="badge badge-primary">{{ donation.status }}</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="4">No donations yet.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                {% endif %}
+                
+                {% if user.is_beneficiary %}
+                <div class="card">
+                    <div class="card-header">
+                        Recent Requests
+                    </div>
+                    <div class="card-body">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Type</th>
+                                    <th>Amount/Description</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for request in user.recent_requests %}
+                                <tr>
+                                    <td>{{ request.created_at }}</td>
+                                    <td>{{ request.type }}</td>
+                                    <td>{{ request.description }}</td>
+                                    <td>
+                                        {% if request.status == 'fulfilled' %}
+                                        <span class="badge badge-success">Fulfilled</span>
+                                        {% elif request.status == 'pending' %}
+                                        <span class="badge badge-warning">Pending</span>
+                                        {% else %}
+                                        <span class="badge badge-primary">{{ request.status }}</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="4">No requests yet.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

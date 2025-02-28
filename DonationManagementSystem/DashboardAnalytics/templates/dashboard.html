@@ -1,0 +1,245 @@
+{% extends "dashboardBase.html" %}
+{% load custom_tags %}
+{% load humanize %}
+<!-- Link css -->
+{% block link-css %}
+{% load static %}
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+    <link rel="stylesheet" href="{% static 'css/sidebar.css' %}">
+{% endblock %}
+
+<!-- Main content -->
+{% block main-content %}
+<div class="container">
+    <div class="dashboard-header">
+        <h1>Donation Management Dashboard</h1>
+        <p>Overview of your organization's donations</p>
+    </div>
+    
+    <div class="grid stats-grid">
+        <div class="card stat-card">
+            <div class="stat-card-header">
+                <div>
+                    <div class="stat-card-title">Available Fund</div>
+                    <div class="stat-card-value">Rs.{{ available_fund | intcomma }}</div>
+                </div>
+                <div class="stat-card-icon icon-blue">
+                    <!-- Dollor sign -->
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </div>
+            </div>
+            <div class="trend trend-up">
+                <!-- Trend up logo -->
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="16" height="16">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                </svg>
+                <!-- Use data from backend -->
+                12.4%
+                <span class="trend-label">from last month</span>
+            </div>
+        </div>
+        
+        <div class="card stat-card">
+            <div class="stat-card-header">
+                <div>
+                    <div class="stat-card-title">Average Donation Received</div>
+                    <div class="stat-card-value">Rs.{{ avg_donation_received | floatformat:2 | intcomma }}</div>
+                </div>
+                <div class="stat-card-icon icon-green">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                    </svg>
+                </div>
+            </div>
+            <div class="trend trend-down">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="16" height="16">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6" />
+                </svg>
+                2.1%
+                <span class="trend-label">from last month</span>
+            </div>
+        </div>
+        
+        <div class="card stat-card">
+            <div class="stat-card-header">
+                <div>
+                    <div class="stat-card-title">No. of donations received</div>
+                    <div class="stat-card-value">{{ received_count }}</div>
+                </div>
+                <div class="stat-card-icon icon-purple">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                    </svg>
+                </div>
+            </div>
+            <div class="trend trend-up">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="16" height="16">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                </svg>
+                5.3%
+                <span class="trend-label">from last month</span>
+            </div>
+            <div class="trend">
+                {{ pending_received_count }} donation pending
+            </div>
+
+        </div>
+        
+        <div class="card stat-card">
+            <div class="stat-card-header">
+                <div>
+                    <div class="stat-card-title">No. of donations donated</div>
+                    <div class="stat-card-value">{{ donation_donated_count }}</div>
+                </div>
+                <div class="stat-card-icon icon-orange">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                </div>
+            </div>
+            <div class="trend trend-up">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="16" height="16">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                </svg>
+                7.2%
+                <span class="trend-label">from last month</span>
+            </div>
+            <div class="trend">
+                {{ pending_donation_donated_count }} donation pending
+            </div>
+        </div>
+    </div>
+    
+    <div class="grid main-grid">
+        <div class="card">
+            <div class="table-header">
+                <h2 class="table-title">Recent Donations</h2>
+                <button class="table-action">View All</button>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Donor</th>
+                            <th>Amount</th>
+                            <th>Date</th>
+                            <th>Type</th>
+                            <th>Source</th>
+                        </tr>
+                    </thead>
+                    <tbody id="donations-table-body">
+                        <!-- Table rows will be added by JavaScript for now.Use django database and it's pagination for more flexibility -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <div class="card sources-section">
+            <h2>Donation Sources</h2>
+            <div id="sources-container">
+                <!-- Source items will be added by JavaScript -->
+            </div>
+            <button class="download-btn">Download Report</button>
+        </div>
+    </div>
+</div>
+
+<!-- Javascript -->
+<script>
+    // Sample data - in Django, you would replace this with data from your backend
+    const donations = [
+        { id: 1, donor: "John Smith", amount: 25000, date: "2025-02-23", type: "One-time", source: "Website" },
+        { id: 2, donor: "Jane Doe", amount: 10000, date: "2025-02-22", type: "Monthly", source: "Email Campaign" },
+        { id: 3, donor: "Robert Johnson", amount: 50000, date: "2025-02-20", type: "One-time", source: "Fundraiser" },
+        { id: 4, donor: "Maria Garcia", amount: 7500, date: "2025-02-19", type: "Monthly", source: "Website" },
+        { id: 5, donor: "David Lee", amount: 15000, date: "2025-02-17", type: "One-time", source: "Social Media" }
+    ];
+
+    // Calculate donation sources
+    function calculateSources(donations) {
+        const sources = {};
+        let totalAmount = 0;
+        
+        donations.forEach(donation => {
+            totalAmount += donation.amount;
+            sources[donation.source] = (sources[donation.source] || 0) + donation.amount;
+        });
+        
+        return { sources, totalAmount };
+    }
+
+    // Populate Recent Donations Table
+    function populateTable(donations) {
+        const tableBody = document.getElementById('donations-table-body');
+        tableBody.innerHTML = '';
+        
+        donations.forEach(donation => {
+            const row = document.createElement('tr');
+            
+            row.innerHTML = `
+                <td>${donation.donor}</td>
+                <td>Rs.${donation.amount}</td>
+                <td>${donation.date}</td>
+                <td><span class="tag ${donation.type === 'Monthly' ? 'tag-green' : 'tag-blue'}">${donation.type}</span></td>
+                <td>${donation.source}</td>
+            `;
+            
+            tableBody.appendChild(row);
+        });
+    }
+
+    // Populate Donation Sources
+    function populateSources(sources, totalAmount) {
+        const sourcesContainer = document.getElementById('sources-container');
+        sourcesContainer.innerHTML = '';
+        
+        Object.entries(sources).forEach(([source, amount]) => {
+            const percentage = (amount / totalAmount * 100).toFixed(1);
+            
+            const sourceItem = document.createElement('div');
+            sourceItem.className = 'source-item';
+            
+            sourceItem.innerHTML = `
+                <div class="source-header">
+                    <span class="source-name">${source}</span>
+                    <span class="source-info">Rs.${amount} (${percentage}%)</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-value" style="width: ${percentage}%"></div>
+                </div>
+            `;
+            
+            sourcesContainer.appendChild(sourceItem);
+        });
+    }
+
+    // Initialize the dashboard
+    function initDashboard() {
+        const { sources, totalAmount } = calculateSources(donations);
+        
+        populateTable(donations);
+        populateSources(sources, totalAmount);
+        
+        // In Django, you would set up event listeners for actions like
+        // downloading reports, filtering data, etc.
+        document.querySelector('.download-btn').addEventListener('click', () => {
+        
+        {% if not request.user.is_authenticated %}
+          window.location.href="{% url 'UserManagement:login' %}"
+          alert('Please login to download');            
+        {% elif request.user.is_authenticated %}
+         alert('Will be available soon')
+        {% endif %}
+            
+        });
+    }
+
+    // Run initialization when the DOM is loaded
+    document.addEventListener('DOMContentLoaded', initDashboard);
+
+    // In Django, you might add code to handle AJAX requests to update data
+    // without requiring a full page reload
+</script>
+{% endblock %}

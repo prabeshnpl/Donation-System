@@ -1,0 +1,76 @@
+{% load custom_tags  %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Donation Management System</title>
+    {% block link-css %}
+    {% endblock %}
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-brand">
+                <i class="fas fa-heart"></i> Donation MS
+            </div>
+
+            
+            <a href="{% url 'DashboardAnalytics:dashboard' %}" class="sidebar-item {% is_active request 'dashboard' %}">
+                <i class="fas fa-tachometer-alt"></i> Dashboard
+            </a>
+            <a href="{% url 'UserManagement:profile' %}" class="sidebar-item {% is_active request 'profile' %}">
+                <i class="fas fa-user"></i> Profile
+            </a>
+            {% if user.type == 'donor' %}
+            <a href="{% url 'DashboardAnalytics:donated' %}" class="sidebar-item {% is_active request 'donated' %}">
+                <i class="fas fa-donate"></i> My Donations
+            </a>
+            {% endif %}
+            {% if user.type == 'beneficiary' %}
+            <a href="{% url 'DashboardAnalytics:requests' %}" class="sidebar-item {% is_active request 'requests' %}">
+                <i class="fas fa-hand-holding-heart"></i> My Requests
+            </a>
+            {% endif %}
+            {% if user.is_staff %}
+            <a href="{% url 'admin:index' %}" class="sidebar-item {% is_active request 'index' %}">
+                <i class="fas fa-tools"></i> Admin
+            </a>
+            {% endif %}
+            <a href="{% url 'UserManagement:logout' %}" class="sidebar-item {% is_active request 'logout' %}">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
+        </div>
+
+        <!-- Main Content -->
+        {% block main-content %}
+        {% endblock %}
+
+    </div>
+    {% block scripts %}
+    {% endblock %}
+
+
+    {% if messages %}
+        <script>
+            {% for message in messages %}
+                alert("{{message|escapejs}}")
+            {% endfor %}
+        </script>
+    {% endif %}
+
+    <script>
+        function initprofile(){
+            {% if not request.user.is_authenticated %}
+              window.location.href="{% url 'UserManagement:login' %}"
+              alert('Please login to continue');            
+            {% endif %}
+        }
+        document.addEventListener('DOMContentLoaded',initprofile)
+    </script>
+</body>
+</html>

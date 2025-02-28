@@ -1,0 +1,29 @@
+{% extends 'loginBase.html' %}
+{% load static %}
+
+{% block tab %}
+<div class="tab-container">
+    <div class="tab" onclick="redirectTo()">Login</div>
+    <div class="tab active">Register</div>
+</div>
+{% endblock %}
+
+{% block form %}
+<div class="form-container active" id="register-form">
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-group">
+             {{ form.as_p }}
+        </div>
+        <button type="submit" class="btn" name="register">Register</button>
+    </form>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function redirectTo(){
+        window.location.href="{% url 'UserManagement:login' %}"
+    }
+</script>
+{% endblock %}

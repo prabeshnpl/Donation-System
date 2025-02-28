@@ -1,0 +1,277 @@
+body {
+    color: #1f2937;
+    line-height: 1.5;
+    font-family: Arial, sans-serif;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+    overflow: auto;
+}
+
+/* Header styles */
+.dashboard-header {
+    margin-bottom: 1.5rem;
+}
+
+.dashboard-header h1 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1f2937;
+}
+
+.dashboard-header p {
+    color: #6b7280;
+}
+
+/* Card styles */
+.card {
+    background-color: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    padding: 1rem;
+}
+
+/* Grid layout */
+.grid {
+    display: grid;
+    grid-gap: 1rem;
+}
+
+.stats-grid {
+    grid-template-columns: repeat(1, 1fr);
+}
+
+.main-grid {
+    grid-template-columns: 1fr;
+}
+
+@media (min-width: 768px) {
+    .container {
+        width: 80%;
+    }
+    
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 1024px) {
+    .stats-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+    
+    .main-grid {
+        grid-template-columns: 2fr 1fr;
+    }
+}
+
+/* Stats card styles */
+.stat-card {
+    margin-bottom: 1rem;
+}
+
+.stat-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.stat-card-title {
+    font-size: 0.875rem;
+    color: #6b7280;
+    font-weight: 500;
+}
+
+.stat-card-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-top: 0.25rem;
+}
+
+.stat-card-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 9999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.stat-card-icon svg {
+    width: 24px;
+    height: 24px;
+}
+
+.icon-blue {
+    background-color: #dbeafe;
+    color: #2563eb;
+}
+
+.icon-green {
+    background-color: #d1fae5;
+    color: #059669;
+}
+
+.icon-purple {
+    background-color: #ede9fe;
+    color: #7c3aed;
+}
+
+.icon-orange {
+    background-color: #ffedd5;
+    color: #ea580c;
+}
+
+.trend {
+    display: flex;
+    align-items: center;
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+}
+
+.trend-up {
+    color: #10b981;
+}
+
+.trend-down {
+    color: #ef4444;
+}
+
+.trend-label {
+    color: #9ca3af;
+    margin-left: 0.5rem;
+}
+
+/* Table styles */
+.table-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.table-title {
+    font-size: 1.125rem;
+    font-weight: 500;
+}
+
+.table-action {
+    color: #2563eb;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 0.875rem;
+}
+
+.table-action:hover {
+    color: #1d4ed8;
+}
+
+.table-container {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th {
+    text-align: left;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #6b7280;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+td {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid #e5e7eb;
+    font-size: 0.875rem;
+}
+
+tr:hover {
+    background-color: #f9fafb;
+}
+
+.tag {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.tag-blue {
+    background-color: #dbeafe;
+    color: #1e40af;
+}
+
+.tag-green {
+    background-color: #d1fae5;
+    color: #065f46;
+}
+
+/* Sources section */
+.sources-section h2 {
+    font-size: 1.125rem;
+    font-weight: 500;
+    margin-bottom: 1rem;
+}
+ 
+.source-item {
+    margin-bottom: 1rem;
+}
+
+.source-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.25rem;
+    font-size: 0.875rem;
+}
+
+.source-name {
+    font-weight: 500;
+}
+
+.source-info {
+    color: #6b7280;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 8px;
+    background-color: #e5e7eb;
+    border-radius: 9999px;
+    overflow: hidden;
+}
+
+.progress-value {
+    height: 100%;
+    background-color: #2563eb;
+    border-radius: 9999px;
+}
+
+.download-btn {
+    display: block;
+    width: 100%;
+    padding: 0.5rem;
+    background-color: #f3f4f6;
+    color: #4b5563;
+    border: none;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    text-align: center;
+    margin-top: 1.5rem;
+}
+
+.download-btn:hover {
+    background-color: #e5e7eb;
+}
