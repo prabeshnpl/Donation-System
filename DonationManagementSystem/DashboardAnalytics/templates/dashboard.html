@@ -6,16 +6,19 @@
 {% load static %}
     <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
     <link rel="stylesheet" href="{% static 'css/sidebar.css' %}">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 {% endblock %}
 
 <!-- Main content -->
 {% block main-content %}
+
 <div class="container">
     <div class="dashboard-header">
         <h1>Donation Management Dashboard</h1>
         <p>Overview of your organization's donations</p>
     </div>
-    
+
+    <!-- Four cards at top -->
     <div class="grid stats-grid">
         <div class="card stat-card">
             <div class="stat-card-header">
@@ -112,118 +115,88 @@
         </div>
     </div>
     
-    <div class="grid main-grid">
-        <div class="card">
-            <div class="table-header">
-                <h2 class="table-title">Recent Donations</h2>
-                <button class="table-action">View All</button>
-            </div>
-            <div class="table-container">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Donor</th>
-                            <th>Amount</th>
-                            <th>Date</th>
-                            <th>Type</th>
-                            <th>Source</th>
-                        </tr>
-                    </thead>
-                    <tbody id="donations-table-body">
-                        <!-- Table rows will be added by JavaScript for now.Use django database and it's pagination for more flexibility -->
-                    </tbody>
-                </table>
-            </div>
+    
+    <!-- Donation desciption card -->
+    <div class="card">
+        <div class="table-header">
+            <h2 class="table-title">Recent Donations</h2>
+            <button class="table-action">View All</button>
         </div>
-        
-        <div class="card sources-section">
-            <h2>Donation Sources</h2>
-            <div id="sources-container">
-                <!-- Source items will be added by JavaScript -->
-            </div>
-            <button class="download-btn">Download Report</button>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Donor</th>
+                        <th>Amount</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                        <th>Donation Method</th>
+                    </tr>
+                </thead>
+                <tbody id="donations-table-body">
+                    {% for donation in page_obj.object_list %}
+                    <tr>
+                        <td>{{ donation.donor }}</td>
+                        <td>{{ donation.donatedAmount }}</td>
+                        <td>{{ donation.donated_at }}</td>
+                        <td>{{ donation.status }}</td>
+                        <td>{{ donation.donationMethod }}</td>
+                    </tr>
+                    {% empty %}
+                        <td>None</td>
+                        <td>None</td>
+                        <td>None</td>
+                        <td>None</td>
+                        <td>None</td>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
     </div>
+
+    <!-- Pagination -->
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
+            {% if page_obj.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page=1" aria-label="First">
+                    <span aria-hidden="true">&laquo;&laquo;</span>
+                </a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            {% endif %}
+            
+            {% for num in page_obj.paginator.page_range %}
+            <li class="page-item {% if page_obj.number == num %}active{% endif %}">
+                <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+            </li>
+            {% endfor %}
+            
+            {% if page_obj.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}" aria-label="Last">
+                    <span aria-hidden="true">&raquo;&raquo;</span>
+                </a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+     
 </div>
 
-<!-- Javascript -->
+
 <script>
-    // Sample data - in Django, you would replace this with data from your backend
-    const donations = [
-        { id: 1, donor: "John Smith", amount: 25000, date: "2025-02-23", type: "One-time", source: "Website" },
-        { id: 2, donor: "Jane Doe", amount: 10000, date: "2025-02-22", type: "Monthly", source: "Email Campaign" },
-        { id: 3, donor: "Robert Johnson", amount: 50000, date: "2025-02-20", type: "One-time", source: "Fundraiser" },
-        { id: 4, donor: "Maria Garcia", amount: 7500, date: "2025-02-19", type: "Monthly", source: "Website" },
-        { id: 5, donor: "David Lee", amount: 15000, date: "2025-02-17", type: "One-time", source: "Social Media" }
-    ];
 
-    // Calculate donation sources
-    function calculateSources(donations) {
-        const sources = {};
-        let totalAmount = 0;
-        
-        donations.forEach(donation => {
-            totalAmount += donation.amount;
-            sources[donation.source] = (sources[donation.source] || 0) + donation.amount;
-        });
-        
-        return { sources, totalAmount };
-    }
-
-    // Populate Recent Donations Table
-    function populateTable(donations) {
-        const tableBody = document.getElementById('donations-table-body');
-        tableBody.innerHTML = '';
-        
-        donations.forEach(donation => {
-            const row = document.createElement('tr');
-            
-            row.innerHTML = `
-                <td>${donation.donor}</td>
-                <td>Rs.${donation.amount}</td>
-                <td>${donation.date}</td>
-                <td><span class="tag ${donation.type === 'Monthly' ? 'tag-green' : 'tag-blue'}">${donation.type}</span></td>
-                <td>${donation.source}</td>
-            `;
-            
-            tableBody.appendChild(row);
-        });
-    }
-
-    // Populate Donation Sources
-    function populateSources(sources, totalAmount) {
-        const sourcesContainer = document.getElementById('sources-container');
-        sourcesContainer.innerHTML = '';
-        
-        Object.entries(sources).forEach(([source, amount]) => {
-            const percentage = (amount / totalAmount * 100).toFixed(1);
-            
-            const sourceItem = document.createElement('div');
-            sourceItem.className = 'source-item';
-            
-            sourceItem.innerHTML = `
-                <div class="source-header">
-                    <span class="source-name">${source}</span>
-                    <span class="source-info">Rs.${amount} (${percentage}%)</span>
-                </div>
-                <div class="progress-bar">
-                    <div class="progress-value" style="width: ${percentage}%"></div>
-                </div>
-            `;
-            
-            sourcesContainer.appendChild(sourceItem);
-        });
-    }
-
-    // Initialize the dashboard
     function initDashboard() {
-        const { sources, totalAmount } = calculateSources(donations);
-        
-        populateTable(donations);
-        populateSources(sources, totalAmount);
-        
-        // In Django, you would set up event listeners for actions like
-        // downloading reports, filtering data, etc.
         document.querySelector('.download-btn').addEventListener('click', () => {
         
         {% if not request.user.is_authenticated %}

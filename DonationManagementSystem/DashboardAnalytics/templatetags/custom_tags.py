@@ -6,11 +6,11 @@ register = template.Library()
 def is_active(request,url_name):
     match = resolve(request.path_info)
     return 'active' if match.url_name == url_name else ''
- 
-@register.filter(name='pluralize')
-def pluralize(donation):
-    return 'donations' if donation > 1 else 'donation'
 
 @register.filter(name='manage_status')
 def manage_status(status):
     return 'Details' if status == 'completed' else 'Manage'
+
+@register.filter(name='plural')
+def plural(word,number):
+    return (word + "s") if number > 1 else word

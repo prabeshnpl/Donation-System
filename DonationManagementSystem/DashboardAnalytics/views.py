@@ -4,16 +4,19 @@ from UserManagement.models import DonationRequest,Beneficiary,Donor,Donation
 from django.db.models import Sum,Count
 from UserManagement.forms import DonateForm,RequestForm
 from django.contrib import messages
+from django.core.paginator import Paginator
 
 # Create your views here.
 @login_required(login_url='user/login/')
 def dashboard(request):
     donation_received = Donation.objects.filter(status='completed').aggregate(Sum('donatedAmount'),Count('donatedAmount'))
     donation_donated = DonationRequest.objects.filter(status='completed').aggregate(Sum('requestedAmount'),Count('requestedAmount'))
-    all_received_count = Donation.objects.count()
     all_donated_count = DonationRequest.objects.count()
-    n = donation_received['donatedAmount__sum']-donation_donated['requestedAmount__sum']
-    print(n-100000)
+    
+    donation = Donation.objects.all()
+    paginator = Paginator(donation,5)
+    page_no = request.GET.get('page')
+    page_obj = paginator.get_page(page_no)
     
     return render(request,'dashboard.html',context={
         'available_fund':donation_received['donatedAmount__sum']-donation_donated['requestedAmount__sum'],
@@ -22,11 +25,12 @@ def dashboard(request):
         'avg_donation_donated': donation_donated['requestedAmount__sum']/donation_donated['requestedAmount__count'],
 
         'received_count':donation_received['donatedAmount__count'],
-        'pending_received_count':all_received_count - donation_received['donatedAmount__count'],
+        'pending_received_count': donation.count() - donation_received['donatedAmount__count'],
 
         'donation_donated_count':donation_donated['requestedAmount__count'],
         'pending_donation_donated_count':all_donated_count - donation_donated['requestedAmount__count'],
 
+        'page_obj':page_obj, 
     })
 
  

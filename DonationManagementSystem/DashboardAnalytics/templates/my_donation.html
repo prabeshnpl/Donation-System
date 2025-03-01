@@ -55,7 +55,7 @@
           <div class="card-body">
             <h5 class="card-title">Pending Donations</h5>
             <h2 class="card-text">Rs. {{ pending_donation | intcomma  }}</h2>
-            <p class="text-primary">{{ pending_no }} {{ pending_no | pluralize }} being processed</p>
+            <p class="text-primary">{{ pending_no }} {{ 'donation' | plural:pending_no }} being processed</p>
           </div>
         </div>
       </div>
@@ -64,7 +64,7 @@
           <div class="card-body">
             <h5 class="card-title">Confirmed Donations</h5>
             <h2 class="card-text">Rs. {{ completed_donation | intcomma }}</h2>
-            <p class="text-muted">{{ completed_no }} {{ completed_no|pluralize }} confirmed</p>
+            <p class="text-muted">{{ completed_no }} {{ 'donation' | plural:completed_no }} confirmed</p>
           </div>
         </div>
       </div>
@@ -109,6 +109,13 @@
               <td><span class="badge bg-success">{{ donation.status | capfirst}}</span></td>
               <td>{{ donation.status|manage_status }}</td>
              </tr>
+             {% empty %}
+              <tr>
+                <td>None</td>
+                <td>None</td>
+                <td>None</td>
+                <td>None</td>
+              </tr>
             {% endfor %}
             
             </tr>

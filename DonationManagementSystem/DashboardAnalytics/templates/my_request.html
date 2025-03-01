@@ -31,8 +31,8 @@
       <div class="card">
         <div class="card-body">
           <h5 class="card-title">Total Requested</h5>
-          <h2 class="card-text">Rs.{{ total_req_amount | default:'0' }}</h2>
-          <p class="text-success">{{ no_of_request | default:'0' }} requests</p>
+          <h2 class="card-text">Rs.{{ total_req_amount | default:'0' | intcomma }}</h2>
+          <p class="text-success">{{ no_of_req | default:'0' }}  {{ 'request' | plural:no_of_req }}</p>
         </div>
       </div>
     </div>
@@ -43,7 +43,7 @@
           <div class="card-body">
             <h5 class="card-title">Active Requests</h5>
             <h2 class="card-text">{{ no_of_active_req }}</h2>
-            <p class="text-primary">Rs.{{ active_req_amount | default:'0' }} goal</p>
+            <p class="text-primary">Rs.{{ active_req_amount | default:'0' | intcomma }} goal</p>
           </div>
         </div>
       </div>
@@ -53,8 +53,8 @@
         <div class="card">
           <div class="card-body">
             <h5 class="card-title">Received</h5>
-            <h2 class="card-text">{{ no_of_req_received }} requests</h2>
-            <p class="text-muted">Rs. {{ received_amount | default:'0' }} </p>
+            <h2 class="card-text">Rs. {{ received_amount | default:'0' | intcomma }} </h2>
+            <p class="text-muted">{{ no_of_req_received | default:'0' }} {{ 'request' | plural:no_of_req_received }} </p>
           </div>
         </div>
       </div>
@@ -100,7 +100,13 @@
                 <td><span class="badge bg-success">{{ donation.status | capfirst}}</span></td>
                 <td>{{ donation.status|manage_status }}</td>
               </tr>
+              {% empty %}
+                <td>None</td>
+                <td>None</td>
+                <td>None</td>
+                <td>None</td>
             {% endfor %}
+            
           </tbody>
         </table>
       </div>

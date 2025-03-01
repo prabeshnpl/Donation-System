@@ -20,8 +20,7 @@
 
 .dashboard-container {
     display: flex;
-    height: 100vh;
-    
+    height: 100vh;    
 }
 
 /* Sidebar styles */
@@ -381,6 +380,7 @@
 @media (max-width: 768px) {
     .dashboard-container {
         flex-direction: column;
+        height: auto;
     }
     
     .sidebar {
