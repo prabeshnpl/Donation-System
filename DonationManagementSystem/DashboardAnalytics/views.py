@@ -14,7 +14,6 @@ def dashboard(request):
     all_donated_count = DonationRequest.objects.count()
     n = donation_received['donatedAmount__sum']-donation_donated['requestedAmount__sum']
     print(n-100000)
-
     
     return render(request,'dashboard.html',context={
         'available_fund':donation_received['donatedAmount__sum']-donation_donated['requestedAmount__sum'],
@@ -30,7 +29,7 @@ def dashboard(request):
 
     })
 
-
+ 
 
 @login_required(login_url='user/login/')
 def my_donations(request):

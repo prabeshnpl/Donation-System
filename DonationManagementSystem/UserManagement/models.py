@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-
+ 
 class CustomUser(AbstractUser):
     """ User class for authentication and validity """
     USER_TYPE = [
@@ -9,8 +9,12 @@ class CustomUser(AbstractUser):
     ]
     username = models.CharField(max_length=64,blank=False, null=False, unique=True)
     email = models.EmailField(blank=False, null=False, unique=True)
-    type = models.CharField(max_length=20,choices=USER_TYPE,default='donor')
-     
+    type = models.CharField(max_length=20,choices=USER_TYPE,default=None)
+    
+    def save(self,*args,**kwargs):
+        if not self.type and self.is_superuser:
+            self.type = 'admin'
+        return super().save(*args,**kwargs)
 
     def __str__(self):
         return self.username

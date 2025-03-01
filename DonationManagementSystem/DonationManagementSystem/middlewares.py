@@ -1,6 +1,8 @@
-from django.shortcuts import HttpResponse
+from django.shortcuts import HttpResponse,redirect
+from django.contrib import messages
+import logging,traceback
 
-
+logger = logging.getLogger('django')
 class CatchException:
     def __init__(self,get_response):
         self.get_response = get_response
@@ -11,5 +13,9 @@ class CatchException:
         return response
         
     def process_exception(self,request,exception):
-        print(exception)
-        return HttpResponse(f'Sorry Error occured: {str(exception)}. Please report it to admin.')
+
+        logger.error("An error occurred: %s", str(exception))
+        logger.error("\n\n\n"+traceback.format_exc()+"\n\n\n")
+
+        messages.error(request,str(exception))
+        return redirect('UserManagement:error')
