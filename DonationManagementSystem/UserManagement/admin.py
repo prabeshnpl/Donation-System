@@ -1,17 +1,24 @@
 from django.contrib import admin
 from .models import CustomUser,Donor,Beneficiary,DonationRequest,Donation
-from .forms import RegisterForm
 
-
+@admin.register(CustomUser)
 class CustomUserAdmin(admin.ModelAdmin):
-    form = RegisterForm
+    list_display = ('username','email','type')
+    list_filter = ('phone_number','address')  
     
-    # def save_form(self, request, form, change):
-    #     user_type = request.POST.get('usertype')  # Get the user_type from the form data
-    #     return form.save(user_type=user_type)
+@admin.register(DonationRequest)
+class DonationRequestAdmin(admin.ModelAdmin):
+    list_display = ('receiver','title','status')
+    list_filter = ('requested_date','requestedAmount')
+    search_fields = ['status']
+    ordering = ['-requested_date']
 
-admin.site.register(CustomUser,CustomUserAdmin)
-admin.site.register(DonationRequest)
-admin.site.register(Donor)
-admin.site.register(Donation)
+class DonationInline(admin.TabularInline):
+    model = Donation
+    extra = 1 
+
+@admin.register(Donor)
+class DonorAdmin(admin.ModelAdmin):
+    inlines = [DonationInline]
+
 admin.site.register(Beneficiary)

@@ -10,6 +10,9 @@ class CustomUser(AbstractUser):
     username = models.CharField(max_length=64,blank=False, null=False, unique=True)
     email = models.EmailField(blank=False, null=False, unique=True)
     type = models.CharField(max_length=20,choices=USER_TYPE,default=None)
+    address = models.CharField(max_length=128,blank=True,null=True)
+    phone_number = models.IntegerField(blank=True,null=True)
+    profile_picture = models.FileField(blank=True,null=True)
     
     def save(self,*args,**kwargs):
         if not self.type and self.is_superuser:
@@ -25,7 +28,7 @@ class Donor(models.Model):
 
     user = models.OneToOneField(CustomUser,on_delete=models.CASCADE,related_name='donor')
     address = models.CharField(max_length=128,blank=True,null=True)
-    # phone_number = models.IntegerField(blank=True,null=True)
+    phone_number = models.IntegerField(blank=True,null=True)
 
     def __str__(self):
         return f'{self.user}'

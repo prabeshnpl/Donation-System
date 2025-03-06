@@ -40,16 +40,16 @@
                             </div>
                         </div>
                         
-                        {% if user.is_donor %}
+                        {% if user.type == 'donor' %}
                         <div class="user-role role-donor">Donor</div>
-                        {% elif user.is_beneficiary %}
+                        {% elif user.type == 'beneficiary' %}
                         <div class="user-role role-beneficiary">Beneficiary</div>
                         {% elif user.is_staff %}
                         <div class="user-role role-admin">Administrator</div>
                         {% endif %}
 
                         <div class="profile-stats">
-                            {% if user.is_donor %}
+                            {% if user.type == 'donor' %}
                             <div class="stat-card donor-stat">
                                 <div class="stat-title">Total Donations</div>
                                 <div class="stat-value">{{ user.donations_count }}</div>
@@ -58,7 +58,7 @@
                                 <div class="stat-title">Impact</div>
                                 <div class="stat-value">{{ user.impact_count }} Lives</div>
                             </div>
-                            {% elif user.is_beneficiary %}
+                            {% elif user.type == 'beneficiary' %}
                             <div class="stat-card beneficiary-stat">
                                 <div class="stat-title">Received</div>
                                 <div class="stat-value">{{ user.received_count }}</div>
@@ -100,8 +100,7 @@
                         Edit Profile
                     </div>
                     <div class="card-body">
-                        <!-- <form method="post" action=" url 'profile_update' "> -->
-                        <form>
+                        <form method="post" action=" url 'UserManagement:profile' ">
                             {% csrf_token %}
                             
                             <div class="form-group">
