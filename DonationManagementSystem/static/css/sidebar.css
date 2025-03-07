@@ -164,9 +164,10 @@
     padding: 3px;
 }
 
-.profile-image .upload-btn {
+.profile-image .pp-upload-form {
     background-color: #f8f9fc;
     border: 1px dashed #d1d3e2;
+    /* height: 2rem;; */
     padding: 0.5rem;
     font-size: 0.8rem;
     color: #858796;
@@ -174,6 +175,13 @@
     margin-top: 0.5rem;
     display: inline-block;
     border-radius: 0.35rem;
+}
+
+
+
+
+.pp-label:hover{
+    cursor: pointer;
 }
 
 .profile-stats {
@@ -395,4 +403,68 @@
     .profile-stats {
         grid-template-columns: 1fr;
     }
+
+    .modal{
+        width: 70%;
+    }
+
+}
+
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    animation: fadeIn 0.3s ease-in-out;
+}
+.modal {
+    /* padding: 20px; */
+    border-radius: 28px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    /* width: 50%; */
+    text-align: center;
+    opacity: 0;
+    transform: scale(0.8);
+    animation: popUp 0.3s ease-in-out forwards;
+}
+@keyframes popUp {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}
+.close-btn {
+    background: red;
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    margin-top: 10px;
+    border-radius: 5px;
 }

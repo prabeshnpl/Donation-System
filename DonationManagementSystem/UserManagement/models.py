@@ -12,7 +12,7 @@ class CustomUser(AbstractUser):
     type = models.CharField(max_length=20,choices=USER_TYPE,default=None)
     address = models.CharField(max_length=128,blank=True,null=True)
     phone_number = models.IntegerField(blank=True,null=True)
-    profile_picture = models.FileField(blank=True,null=True)
+    profile_picture = models.ImageField(upload_to='profile_pictures/',blank=True,null=True)
     
     def save(self,*args,**kwargs):
         if not self.type and self.is_superuser:

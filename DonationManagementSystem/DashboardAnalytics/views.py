@@ -13,7 +13,7 @@ def dashboard(request):
     donation_donated = DonationRequest.objects.filter(status='completed').aggregate(Sum('requestedAmount'),Count('requestedAmount'))
     all_donated_count = DonationRequest.objects.count()
     
-    donation = Donation.objects.all()
+    donation = Donation.objects.all().order_by('id')
     paginator = Paginator(donation,5)
     page_no = request.GET.get('page')
     page_obj = paginator.get_page(page_no)

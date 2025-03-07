@@ -67,3 +67,32 @@ class RequestForm(forms.ModelForm):
             'requestedAmount':forms.TextInput(attrs={'type':"number"}),
             'description':forms.TextInput(attrs={'type':"text"}),
         }
+
+class UpdateProfileForm(forms.ModelForm):
+
+    def __init__(self,*args,**kwargs):
+        # Fetch user from kwargs
+        user = kwargs.pop('user',None)
+        super().__init__(*args,**kwargs)
+        if user:
+            for fieldname in self.fields:
+                if hasattr(user,fieldname): #Check if user has attribute as fieldname's value
+                    self.fields[fieldname].initial = getattr(user,fieldname)
+
+    class Meta:
+        model = CustomUser
+        fields = ['first_name','last_name','email','address','phone_number','profile_picture']
+        labels={
+            'first_name':'First Name',
+            'last_name':'Last Name',
+            'email':'Email',
+            'address':'Address',
+            'phone_number':'Phone Number',
+        }
+        widgets={
+            'first_name':forms.TextInput(attrs={'type':"text" ,'class':'form-control'}),
+            'last_name':forms.TextInput(attrs={'type':"text",'class':'form-control'}),
+            'email':forms.EmailInput(attrs={'type':"email",'class':'form-control'}),
+            'address':forms.TextInput(attrs={'type':"text",'class':'form-control'}),
+            'phone_number':forms.TextInput(attrs={'type':"number",'class':'form-control'}),
+        }

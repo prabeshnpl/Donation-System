@@ -49,7 +49,7 @@ LOGOUT_REDIRECT_URL = 'user/login/'
 LOGIN_REDIRECT_URL = '/'
 
 MIDDLEWARE = [
-    'DonationManagementSystem.middlewares.CatchException',
+    # 'DonationManagementSystem.middlewares.CatchException',
 
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -154,3 +154,6 @@ LOGGING = {
         },
     },
 }
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

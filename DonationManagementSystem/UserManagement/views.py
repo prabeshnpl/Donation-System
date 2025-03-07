@@ -1,10 +1,12 @@
 from django.shortcuts import render,redirect
+from django.utils.functional import SimpleLazyObject
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.contrib import messages
 from django.contrib.auth import authenticate,login,logout
 from django.views.generic import TemplateView,FormView
-from .forms import LoginForm,RegisterForm
+from .forms import LoginForm,RegisterForm, UpdateProfileForm
+from .models import CustomUser
 # Create your views here.
 
 class Register(FormView):
@@ -59,12 +61,37 @@ def log_out(request):
 
 class Profile(LoginRequiredMixin,TemplateView):
     template_name = 'profile.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # Pass the user object to the form for pre saved data
+        context['form'] = UpdateProfileForm(user=self.request.user)
+        # context['profile_picture'] = self.request.user.profile_picture
+        return context
+    
+    def post(self,request):
+        if 'profile_picture' in request.FILES: 
+            user = CustomUser.objects.get(pk=request.user.pk)
+            user.profile_picture = request.FILES['profile_picture']
+            user.save()
+            return redirect('UserManagement:profile')
+       
+        else:
+            print(request.POST)
+            form = UpdateProfileForm(request.POST,instance=request.user)
+            print(request.POST.get('first_name'))
+            if form.is_valid():
+                form.save()
+                return redirect('UserManagement:profile')
+
+            else:
+                form = UpdateProfileForm(instance=request.user)
+                return render(request,'profile.html')
+
+        
   
 class ErrorView(TemplateView):
     template_name = 'error.html'
 
-    # def get_context_data(self, **kwargs):
-    #     context = super().get_context_data(**kwargs)
-    #     context['error'] = 
 
 
