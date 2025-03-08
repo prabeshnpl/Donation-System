@@ -177,8 +177,16 @@
     border-radius: 0.35rem;
 }
 
+.pp-img , .pp-img-overlay{
+    object-fit: cover;
+    border-radius: 50%;
+    cursor: pointer;
+}
 
 
+button input{
+    cursor: pointer;
+}
 
 .pp-label:hover{
     cursor: pointer;
@@ -404,9 +412,6 @@
         grid-template-columns: 1fr;
     }
 
-    .modal{
-        width: 70%;
-    }
 
 }
 
@@ -424,10 +429,7 @@
     animation: fadeIn 0.3s ease-in-out;
 }
 .modal {
-    /* padding: 20px; */
     border-radius: 28px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-    /* width: 50%; */
     text-align: center;
     opacity: 0;
     transform: scale(0.8);
@@ -458,13 +460,4 @@
     to {
         opacity: 0;
     }
-}
-.close-btn {
-    background: red;
-    color: white;
-    border: none;
-    padding: 10px;
-    cursor: pointer;
-    margin-top: 10px;
-    border-radius: 5px;
 }

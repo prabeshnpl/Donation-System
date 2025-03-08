@@ -14,7 +14,7 @@ def dashboard(request):
     all_donated_count = DonationRequest.objects.count()
     
     donation = Donation.objects.all().order_by('id')
-    paginator = Paginator(donation,5)
+    paginator = Paginator(donation,4)
     page_no = request.GET.get('page')
     page_obj = paginator.get_page(page_no)
     
@@ -77,7 +77,7 @@ def my_donations(request):
         'donations':donations,
         'donation_form':DonateForm(),
     })
-
+ 
 @login_required(login_url='user/login/')
 def my_requests(request):
 

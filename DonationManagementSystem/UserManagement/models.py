@@ -40,7 +40,6 @@ class Beneficiary(models.Model):
     user = models.OneToOneField(CustomUser,on_delete=models.CASCADE,related_name='beneficiary')
     totalReceived = models.IntegerField(null=True,blank=True)
     address = models.CharField(max_length=128,blank=True,null=True)
-    # phone_number = models.IntegerField(blank=True,null=True)
 
     def __str__(self):
         return f'{self.user}'

@@ -6,7 +6,7 @@ from django.contrib import messages
 from django.contrib.auth import authenticate,login,logout
 from django.views.generic import TemplateView,FormView
 from .forms import LoginForm,RegisterForm, UpdateProfileForm
-from .models import CustomUser
+from .models import CustomUser,Donation,DonationRequest
 # Create your views here.
 
 class Register(FormView):
@@ -64,29 +64,39 @@ class Profile(LoginRequiredMixin,TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # Pass the user object to the form for pre saved data
+        # Pass the user object to the form to load user 
         context['form'] = UpdateProfileForm(user=self.request.user)
-        # context['profile_picture'] = self.request.user.profile_picture
+        
+        if self.request.user.type == 'beneficiary':
+            # print('yes')
+            pending = DonationRequest.objects.filter(receiver=self.request.user.beneficiary,status='pending').count()
+            received = DonationRequest.objects.filter(receiver=self.request.user.beneficiary,status='completed').count()
+            context['pending'] = pending
+            context['received'] = received
+        elif self.request.user.type == 'donor':
+            pending = Donation.objects.filter(donor=self.request.user.donor,status='pending').count()
+            total_donation = Donation.objects.filter(donor=self.request.user.donor).count()
+            context['pending'] = pending
+            context['total_donation'] = total_donation
         return context
     
     def post(self,request):
+
         if 'profile_picture' in request.FILES: 
             user = CustomUser.objects.get(pk=request.user.pk)
             user.profile_picture = request.FILES['profile_picture']
             user.save()
             return redirect('UserManagement:profile')
-       
+        
         else:
-            print(request.POST)
             form = UpdateProfileForm(request.POST,instance=request.user)
-            print(request.POST.get('first_name'))
             if form.is_valid():
                 form.save()
                 return redirect('UserManagement:profile')
 
             else:
                 form = UpdateProfileForm(instance=request.user)
-                return render(request,'profile.html')
+                return redirect('UserManagement:profile')
 
         
   

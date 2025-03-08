@@ -1,5 +1,5 @@
 {% extends "dashboardBase.html" %}
-
+{% load custom_tags %}
 <!-- Link the css -->
 {% block link-css %}
 {% load static %}
@@ -16,12 +16,14 @@
             <input type="text" placeholder="Search...">
         </div>
         <div class="user-info">
-            {% if user.profile_picture %}
-            <img src="{{ user.profile_picture.url }}" alt="Profile Picture" style="object-fit: cover;">
-            {% else %}
-            <img src="/media/profile_pictures/wow.jpg" alt="Default Profile Picture" style="object-fit: cover;">
-            {% endif %}
-            <span>{{ user.first_name }} {{ user.last_name }}</span>
+            <span>{{ user.username | capfirst }}</span>
+            <div onclick="showPP()">
+                {% if user.profile_picture %}
+                <img src="{{ user.profile_picture.url }}" alt="Profile Picture" class="pp-img" >
+                {% else %}
+                <img src="/media/profile_pictures/wow.jpg" alt="Default Profile Picture" class="pp-img">
+                {% endif %}
+            </div>            
         </div>
     </div>
 
@@ -30,19 +32,22 @@
         <h1 class="page-title">User Profile</h1>
         
         <div class="profile-container">
+
             <!-- Left Column - Profile Details -->
             <div>
+
+                <!-- Simple user info  -->
                 <div class="card">
                     <div class="card-header">
                         Profile Information
                     </div>
                     <div class="card-body">
                         <div class="profile-image">
-                            <div onclick="showPP()" style="">
+                            <div onclick="showPP()">
                                 {% if user.profile_picture %}
-                                <img src="{{ user.profile_picture.url }}" alt="Profile Picture" style="object-fit: cover;">
+                                <img src="{{ user.profile_picture.url }}" alt="Profile Picture" class="pp-img" >
                                 {% else %}
-                                <img src="/media/profile_pictures/wow.jpg" alt="Default Profile Picture" style="object-fit: cover;">
+                                <img src="/media/profile_pictures/wow.jpg" alt="Default Profile Picture" class="pp-img">
                                 {% endif %}
                             </div>
                             
@@ -72,20 +77,20 @@
                             {% if user.type == 'donor' %}
                             <div class="stat-card donor-stat">
                                 <div class="stat-title">Total Donations</div>
-                                <div class="stat-value">{{ user.donations_count }}</div>
+                                <div class="stat-value">{{ total_donation }}</div>
                             </div>
                             <div class="stat-card impact-stat">
-                                <div class="stat-title">Impact</div>
-                                <div class="stat-value">{{ user.impact_count }} Lives</div>
+                                <div class="stat-title">Pending</div>
+                                <div class="stat-value">{{ pending }} </div>
                             </div>
                             {% elif user.type == 'beneficiary' %}
                             <div class="stat-card beneficiary-stat">
                                 <div class="stat-title">Received</div>
-                                <div class="stat-value">{{ user.received_count }}</div>
+                                <div class="stat-value">{{ received }}</div>
                             </div>
                             <div class="stat-card history-stat">
                                 <div class="stat-title">Pending</div>
-                                <div class="stat-value">{{ user.pending_count }}</div>
+                                <div class="stat-value">{{ pending  }}</div>
                             </div>
                             {% endif %}
                         </div>
@@ -112,147 +117,63 @@
                         </div>
                     </div>
                 </div>
+
             </div>
 
             <!-- Right Column - Edit Profile -->
-            <div>
-                <div class="card">
-                    <div class="card-header">
-                        Edit Profile
-                    </div>
-                    <div class="card-body">
-                        <form method="post" action=" {% url 'UserManagement:profile' %} ">
-                            {% csrf_token %}
-                            <div class="form-group">
-                                {{ form.first_name.label }}
-                                {{ form.first_name }}
-                            </div>
-
-                            <div class="form-group">
-                                {{ form.last_name.label }}    
-                                {{ form.last_name }}    
-                            </div>
-
-                            <div class="form-group">
-                                {{ form.email.label }}    
-                                {{ form.email }}    
-                            </div>
-                             
-                            <div class="form-group">
-                                {{ form.phone_number.label }}    
-                                {{ form.phone_number }}    
-                            </div>
-
-                            <div class="form-group">
-                                {{ form.address.label }}    
-                                {{ form.address }}    
-                            </div>
-                             
-                            <div class="form-group">
-                                <button type="submit" class="btn btn-primary">Save Changes</button>
-                            </div>
-                        </form>
-                    </div>
+            <div class="card">
+                <div class="card-header">
+                    Edit Profile
                 </div>
-                
-                {% if user.type == 'donor' %}
-                <div class="card">
-                    <div class="card-header">
-                        Recent Donations
-                    </div>
-                    <div class="card-body">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th>Date</th>
-                                    <th>Beneficiary</th>
-                                    <th>Type</th>
-                                    <th>Status</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for donation in user.recent_donations %}
-                                <tr>
-                                    <td>{{ donation.created_at }}</td>
-                                    <td>{{ donation.beneficiary.name }}</td>
-                                    <td>{{ donation.type }}</td>
-                                    <td>
-                                        {% if donation.status == 'completed' %}
-                                        <span class="badge badge-success">Completed</span>
-                                        {% elif donation.status == 'pending' %}
-                                        <span class="badge badge-warning">Pending</span>
-                                        {% else %}
-                                        <span class="badge badge-primary">{{ donation.status }}</span>
-                                        {% endif %}
-                                    </td>
-                                </tr>
-                                {% empty %}
-                                <tr>
-                                    <td colspan="4">No donations yet.</td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
+                <div class="card-body">
+                    <form method="post" action=" {% url 'UserManagement:profile' %} ">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            {{ form.first_name.label }}
+                            {{ form.first_name }}
+                        </div>
+
+                        <div class="form-group">
+                            {{ form.last_name.label }}    
+                            {{ form.last_name }}    
+                        </div>
+
+                        <div class="form-group">
+                            {{ form.email.label }}    
+                            {{ form.email }}    
+                        </div>
+                            
+                        <div class="form-group">
+                            {{ form.phone_number.label }}    
+                            {{ form.phone_number }}    
+                        </div>
+
+                        <div class="form-group">
+                            {{ form.address.label }}    
+                            {{ form.address }}    
+                        </div>
+                            
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                        </div>
+                    </form>
                 </div>
-                
-                {% elif user.type == 'beneficiary' %}
-                <div class="card">
-                    <div class="card-header">
-                        Recent Requests
-                    </div>
-                    <div class="card-body">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th>Date</th>
-                                    <th>Type</th>
-                                    <th>Amount/Description</th>
-                                    <th>Status</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for request in user.recent_requests %}
-                                <tr>
-                                    <td>{{ request.created_at }}</td>
-                                    <td>{{ request.type }}</td>
-                                    <td>{{ request.description }}</td>
-                                    <td>
-                                        {% if request.status == 'fulfilled' %}
-                                        <span class="badge badge-success">Fulfilled</span>
-                                        {% elif request.status == 'pending' %}
-                                        <span class="badge badge-warning">Pending</span>
-                                        {% else %}
-                                        <span class="badge badge-primary">{{ request.status }}</span>
-                                        {% endif %}
-                                    </td>
-                                </tr>
-                                {% empty %}
-                                <tr>
-                                    <td colspan="4">No requests yet.</td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                {% endif %}
             </div>
+
         </div>
     </div>
 </div>
 
 
-<div class="overlay" id="overlay">
+<div class="overlay" id="overlay" onclick="closePP()">
     <div class="modal" id="modal">
-        <h2>Profile Picture</h2>
+        <h1 style="color: aliceblue;">Profile Picture</h1>
         {% if user.profile_picture %}
-        <img src="{{ user.profile_picture.url }}" alt="Profile Picture" width="400px" height="400px" style="border-radius: 50%;object-fit: cover;">
+        <img src="{{ user.profile_picture.url }}" alt="Profile Picture" height="200px" width="200px" class="pp-img-overlay">
         {% else %}
-        <img src="/media/profile_pictures/wow.jpg" alt="Default Profile Picture" width="400px" height="400px" style="border-radius: 50%;object-fit: cover;">
+        <img src="/media/profile_pictures/wow.jpg" alt="Default Profile Picture" height="200px" width="200px" class="pp-img-overlay">
         {% endif %}
     </div>
-    <button class="close-btn" onclick="closePP()">Close</button>
 </div>
 
 
