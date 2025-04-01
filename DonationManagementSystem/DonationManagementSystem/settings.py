@@ -26,7 +26,9 @@ SECRET_KEY = 'django-insecure-w2zz_91j+4^9zv0ei@f#tz9758)3=fe+!ln1y=!jdo@78rtpuh
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['donation-system-uwvm.onrender.com','127.0.0.1']
+CSRF_TRUSTED_ORIGINS = ['https://donation-system-uwvm.onrender.com']
+
 
 
 # Application definition
