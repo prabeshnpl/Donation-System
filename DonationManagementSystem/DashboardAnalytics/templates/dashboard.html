@@ -13,6 +13,24 @@
 {% block main-content %}
 
 <div class="container">
+
+    <div class="topbar">
+        <div class="topbar-search">
+            <i class="fas fa-search"></i>
+            <input type="text" placeholder="Search...">
+        </div>
+        <div class="user-info">
+            <span>{{ user.username | capfirst }}</span>
+            <div onclick="showPP()">
+                {% if user.profile_picture %}
+                <img src="{{ user.profile_picture.url }}" alt="Profile Picture" class="pp-img" >
+                {% else %}
+                <img src="/media/profile_pictures/wow.jpg" alt="Default Profile Picture" class="pp-img">
+                {% endif %}
+            </div>            
+        </div>
+    </div>
+    
     <div class="dashboard-header">
         <h1>Donation Management Dashboard</h1>
         <p>Overview of your organization's donations</p>
